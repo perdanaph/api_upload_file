@@ -78,10 +78,6 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: {
             msg: "password can't be empty string",
           },
-          len: {
-            args: [8, 10],
-            msg: 'password must consist of 8 to 10 characters',
-          },
         },
       },
       profile_image: DataTypes.STRING,
