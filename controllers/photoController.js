@@ -1,4 +1,6 @@
 const { Photo } = require('../models/index');
+const fs = require('fs-extra');
+const path = require('path');
 
 exports.post = async (req, res, next) => {
   try {
@@ -29,5 +31,47 @@ exports.get = async (req, res, next) => {
     next(error);
   }
 };
-// exports.put = async (req, res, next) => {};
+exports.put = async (req, res, next) => {
+  const { id } = req.params;
+  const { name, description, UserId } = req.body;
+  try {
+    const findPhoto = await Photo.findOne({ where: { id } });
+    if (!findPhoto) {
+      return res.status(404).json({
+        message: 'Fail, cannot find data photo'
+      });
+    }
+    if (req.file == undefined) {
+      const photo = (
+        await Photo.update(
+          { name, description, UserId },
+          { where: { id }, returning: true }
+        )
+      )[1][0];
+      return res.status(200).json({
+        message: 'Success',
+        photo: photo
+      });
+    } else {
+      await fs.unlink(path.join(`public/${findPhoto.photo_url}`));
+      const photo = (
+        await Photo.update(
+          {
+            name,
+            description,
+            photo_url: `images/${req.file.filename}`,
+            UserId
+          },
+          { where: { id }, returning: true }
+        )
+      )[1][0];
+      return res.status(200).json({
+        message: 'Success',
+        photo: photo
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 // exports.delete = async (req, res, next) => {};
