@@ -6,6 +6,6 @@ const errorMiddleware = require('./../middlewares/error');
 router.use('/api/v1', userRouter);
 router.use('/api/v1', photoRouter);
 
-router.use(errorMiddleware);
+// router.use(errorMiddleware);
 
 module.exports = router;
