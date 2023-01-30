@@ -74,4 +74,50 @@ exports.put = async (req, res, next) => {
     next(error);
   }
 };
-// exports.delete = async (req, res, next) => {};
+exports.destroy = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const findPhoto = await Photo.findOne({ where: { id } });
+    if (!findPhoto) {
+      return res.status(404).json({
+        message: 'photo does not exist'
+      });
+    }
+    await fs.unlink(path.join(`public/${findPhoto.photo_url}`));
+    // delete photo
+    await Photo.destroy({
+      where: { id }
+    });
+    return res.status(200).json({
+      message: 'Success delete photo '
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.authorize = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const authenticationUser = req.user.id;
+    const photo = await Photo.findOne({
+      where: {
+        id
+      }
+    });
+    if (!photo) {
+      res.status(404).json({
+        name: 'Data Not Found',
+        message: `Photo with id "${id}" not found`
+      });
+    } else if (photo.UserId === authenticationUser) {
+      next();
+    } else {
+      res.status(403).json({
+        name: 'Authorization Error',
+        message: `User with id "${authenticationUser}" does not have permission to access Photo with id "${id}"`
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
