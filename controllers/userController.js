@@ -3,19 +3,19 @@ const { encryptPassword } = require('./../helpers/encrypt');
 const { jwtHelpers } = require('./../helpers/jsonwebtoken');
 
 exports.register = async (req, res, next) => {
-  const { firstName, lastName, username, email, password, profile_image } = req.body;
+  const { firstName, lastName, username, email, password } = req.body;
   try {
     const cekUniqEmail = await User.findOne({ where: { email: email } });
 
     if (cekUniqEmail) {
       return res.status(400).json({
-        message: 'Fail, your email has been registered',
+        message: 'Fail, your email has been registered'
       });
     }
 
     if (password.length < 8 || password.length > 12) {
       return res.status(400).json({
-        message: 'Fail, password length should be 8 - 10 characters',
+        message: 'Fail, password length should be 8 - 10 characters'
       });
     }
 
@@ -25,12 +25,11 @@ exports.register = async (req, res, next) => {
       lastName,
       username,
       email,
-      password: hashPsw,
-      profile_image,
+      password: hashPsw
     });
 
     return res.status(201).json({
-      message: 'Success register',
+      message: 'Success register'
     });
   } catch (error) {
     next(error);
@@ -42,38 +41,38 @@ exports.login = async (req, res, next) => {
   try {
     if (!email) {
       return res.status(400).json({
-        message: 'Fail, email has required',
+        message: 'Fail, email has required'
       });
     }
 
     if (!password) {
       return res.status(400).json({
-        message: 'Fail, password has required',
+        message: 'Fail, password has required'
       });
     }
 
     const data = await User.findOne({ where: { email: email } });
     if (!data) {
       return res.status(400).json({
-        message: 'Fail, Your email is not registered',
+        message: 'Fail, Your email is not registered'
       });
     }
 
     if (!encryptPassword.compare(password, data.password)) {
       return res.status(400).json({
-        message: 'Fail, Your password incorrect',
+        message: 'Fail, Your password incorrect'
       });
     }
 
     const token = jwtHelpers.sign({
       id: data.id,
       email: data.email,
-      username: data.username,
+      username: data.username
     });
 
     return res.status(200).json({
       message: 'Success',
-      token,
+      token
     });
   } catch (error) {
     console.log(error);

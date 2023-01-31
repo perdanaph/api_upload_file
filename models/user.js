@@ -19,72 +19,71 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'first name has required',
+            msg: 'first name has required'
           },
           notEmpty: {
-            msg: "first name can't be empty string",
-          },
-        },
+            msg: "first name can't be empty string"
+          }
+        }
       },
       lastName: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'last name has required',
+            msg: 'last name has required'
           },
           notEmpty: {
-            msg: "last name can't be empty string",
-          },
-        },
+            msg: "last name can't be empty string"
+          }
+        }
       },
       username: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
-          msg: 'username is already exist',
+          msg: 'username is already exist'
         },
         validate: {
           notNull: {
-            msg: 'username has required',
+            msg: 'username has required'
           },
           notEmpty: {
-            msg: "username can't be empty string",
-          },
-        },
+            msg: "username can't be empty string"
+          }
+        }
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: {
-          msg: 'Email is already exist',
+          msg: 'Email is already exist'
         },
         validate: {
           notNull: {
-            msg: 'email has required',
+            msg: 'email has required'
           },
           notEmpty: {
-            msg: "email can't be empty string",
-          },
-        },
+            msg: "email can't be empty string"
+          }
+        }
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notNull: {
-            msg: 'password has required',
+            msg: 'password has required'
           },
           notEmpty: {
-            msg: "password can't be empty string",
-          },
-        },
-      },
-      profile_image: DataTypes.STRING,
+            msg: "password can't be empty string"
+          }
+        }
+      }
     },
     {
       sequelize,
-      modelName: 'User',
+      modelName: 'User'
     }
   );
   return User;
