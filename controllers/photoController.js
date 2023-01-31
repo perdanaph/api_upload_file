@@ -22,7 +22,7 @@ exports.post = async (req, res, next) => {
 };
 exports.get = async (req, res, next) => {
   try {
-    const photo = await Photo.findAll();
+    const photo = await Photo.findByOwnerid(req.user.id);
     return res.status(200).json({
       message: 'Success',
       photo
@@ -92,7 +92,7 @@ exports.destroy = async (req, res, next) => {
       message: 'Success delete photo '
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 exports.authorize = async (req, res, next) => {
