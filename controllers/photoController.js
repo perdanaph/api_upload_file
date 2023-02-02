@@ -22,7 +22,7 @@ exports.post = async (req, res, next) => {
 };
 exports.get = async (req, res, next) => {
   try {
-    const photo = await Photo.findByOwnerid(req.user.id);
+    const photo = await Photo.findAll({ where: { UserId: req.user.id } });
     return res.status(200).json({
       message: 'Success',
       photo

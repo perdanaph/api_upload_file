@@ -18,9 +18,9 @@ async function authMiddleware(req, res, next) {
       });
     }
     req.user = { id, email, username };
-    return next();
+    next();
   } catch (error) {
-    return next(error);
+    return res.status(500).json({ message: error.message });
   }
 }
 

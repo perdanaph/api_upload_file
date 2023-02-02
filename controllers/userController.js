@@ -64,17 +64,53 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const token = jwtHelpers.sign({
-      id: data.id,
-      email: data.email,
-      username: data.username
-    });
+    const token = jwtHelpers.sign(
+      {
+        id: data.id,
+        email: data.email,
+        username: data.username
+      },
+      { expiresIn: '30s' }
+    );
+    const refreshToken = jwtHelpers.signRefreshToken(
+      {
+        id: data.id,
+        email: data.email,
+        username: data.username
+      },
+      { expiresIn: '1d' }
+    );
 
-    return res.status(200).json({
+    res.cookie('token', refreshToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000
+    });
+    await User.update(
+      { refreshToken: refreshToken },
+      { where: { id: data.id } }
+    );
+    res.status(200).json({
       message: 'Success',
       token
     });
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
+
+exports.logout = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.sendStatus(204);
+    const user = await User.findOne({
+      where: { refreshToken: token }
+    });
+    if (!user) return res.sendStatus(204);
+    const userId = user.id;
+    await User.update({ refreshToken: null }, { where: { id: userId } });
+    res.clearCookie('token');
+    return res.sendStatus(200);
+  } catch (error) {
+    next(error);
   }
 };

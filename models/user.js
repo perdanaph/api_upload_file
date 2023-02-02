@@ -79,6 +79,10 @@ module.exports = (sequelize, DataTypes) => {
             msg: "password can't be empty string"
           }
         }
+      },
+      refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
     },
     {
